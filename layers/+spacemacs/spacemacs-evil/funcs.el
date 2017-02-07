@@ -9,6 +9,47 @@
 ;;
 ;;; License: GPLv3
 
+
+
+(defun spacemacs//evil-lisp-more-keys ()
+  "Some evil-lisp-state changes:
+* Insert-mode returns to evil-lisp-state
+* [C g] returns to normal-mode from evil-lisp-state or evil-lisp-insert-state
+* Leader key available"
+  (progn
+    (defun lisp-state-insert-sexp-after ()
+      "Insert sexp after the current one."
+      (interactive)
+      (let ((sp-navigate-consider-symbols nil))
+        (if (char-equal (char-after) ?\() (forward-char))
+        (sp-up-sexp)
+        (evil-lisp-insert-state
+         (sp-newline)
+         (sp-insert-pair "("))))
+
+    (defun lisp-state-insert-sexp-before ()
+      "Insert sexp before the current one."
+      (interactive)
+      (let ((sp-navigate-consider-symbols nil))
+        (if (char-equal (char-after) ?\() (forward-char))
+        (sp-backward-sexp)
+        (evil-lisp-insert-state)
+        (sp-newline)
+        (evil-previous-visual-line)
+        (evil-end-of-line)
+        (insert " ")
+        (sp-insert-pair "(")
+        (indent-for-tab-command)))
+    (define-key evil-lisp-state-map
+      (kbd dotspacemacs-leader-key) spacemacs-default-map)
+    (define-key evil-lisp-state-map "i"   'evil-lisp-insert-state)
+    (define-key evil-lisp-state-map (kbd "C-g") 'evil-lisp-state/quit)
+    (define-key evil-lisp-insert-state-map (kbd "C-g") 'evil-lisp-state/quit)
+    (define-key evil-lisp-insert-state-map [escape]    'evil-lisp-state)
+    (spacemacs//lisp-insert-state-hybrid dotspacemacs-editing-style)
+    (add-hook 'spacemacs-editing-style-hook
+              #'spacemacs//lisp-insert-state-hybrid)))
+
 (defvar spacemacs--evil-lisp-insert-states-default nil
   "Default value of the list of additional states enabled in \
 `evil-lisp-insert-state'.")

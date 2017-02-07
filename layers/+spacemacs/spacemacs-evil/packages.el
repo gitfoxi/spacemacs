@@ -94,35 +94,19 @@
     (add-hook 'spacemacs-editing-style-hook
               #'spacemacs//iedit-insert-state-hybrid)))
 
+(defun spacemacs-evil/init-evil-lisp-state ()
+  (use-package evil-lisp-state
+    :init
+    (progn  (setq evil-lisp-state-global t)
+            )
+    :config
+    (progn
+      (spacemacs/set-leader-keys "k" evil-lisp-state-map)
+      (spacemacs//evil-lisp-more-keys))))
+
 (defun spacemacs-evil/init-evil-indent-plus ()
   (use-package evil-indent-plus
     :init (evil-indent-plus-default-bindings)))
-
-(evil-define-state lisp-insert
-  "Replace insert state in `lisp state'."
-  :tag " <El> "
-  :enable (insert)
-  :cursor (bar . 2)
-  :message "-- LISP-INSERT --"
-  :input-method t)
-
-(defun tweak-lisp-mode ()
-  (progn
-    (spacemacs/set-leader-keys "k" evil-lisp-state-map)
-    (define-key evil-lisp-state-map
-      (kbd dotspacemacs-leader-key) spacemacs-default-map)
-    (define-key evil-lisp-state-map "i"   'evil-lisp-insert-state)
-    (define-key evil-lisp-insert-state-map (kbd "C-g") 'evil-lisp-state/quit)
-    (define-key evil-lisp-insert-state-map [escape]    'evil-lisp-state)
-    (spacemacs//lisp-insert-state-hybrid dotspacemacs-editing-style)
-    (add-hook 'spacemacs-editing-style-hook
-              #'spacemacs//lisp-insert-state-hybrid)))
-(tweak-lisp-mode)
-
-(defun spacemacs-evil/init-evil-lisp-state ()
-  (use-package evil-lisp-state
-    :init (setq evil-lisp-state-global t)
-    :config (tweak-lisp-mode)))
 
 (defun spacemacs-evil/init-evil-mc ()
   (use-package evil-mc

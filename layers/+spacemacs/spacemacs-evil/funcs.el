@@ -9,6 +9,34 @@
 ;;
 ;;; License: GPLv3
 
+(defvar spacemacs--evil-lisp-insert-states-default nil
+  "Default value of the list of additional states enabled in \
+`evil-lisp-insert-state'.")
+
+(defvar spacemacs--evil-lisp-insert-states-hybrid nil
+  "List of additional states enabled in `evil-lisp-insert-state' when
+`hybrid-mode' is active.")
+
+(defun spacemacs//lisp-insert-state-hybrid (style)
+  "If STYLE is hybrid, update `evil-lisp-insert-state' definition to enable
+`evil-hybrid-state' instead of `evil-insert-state'.
+Otherwise, revert to the default behavior (i.e. enable `evil-insert-state')."
+  ;; Populate variables on the first invocation.
+  (unless spacemacs--evil-lisp-insert-states-default
+    (setq spacemacs--evil-lisp-insert-states-default
+          (evil-get-property evil-state-properties 'lisp-insert :enable))
+    (setq spacemacs--evil-lisp-insert-states-hybrid
+          (mapcar (lambda (item)
+                    (if (eq item 'insert) 'hybrid item))
+                  spacemacs--evil-lisp-insert-states-default)))
+  (let ((states (if (eq style 'hybrid)
+                    spacemacs--evil-lisp-insert-states-hybrid
+                  spacemacs--evil-lisp-insert-states-default)))
+    (evil-put-property 'evil-state-properties 'lisp-insert
+                       :enable states)))
+
+
+
 (defvar spacemacs--evil-iedit-insert-states-default nil
   "Default value of the list of additional states enabled in \
 `evil-iedit-insert-state'.")
